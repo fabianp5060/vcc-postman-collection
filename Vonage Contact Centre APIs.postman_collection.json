@@ -1,0 +1,2040 @@
+{
+	"info": {
+		"_postman_id": "6d897ecb-af03-4504-9764-990159525965",
+		"name": "Vonage Contact Centre APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "OIDC Auth",
+			"item": [
+				{
+					"name": "OIDC Token - all scopes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "23df686d-6c33-4d99-a7ad-a2ce0ca9b178",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{secret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{clientId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "users:read stats interaction-content:read interactions:write agents-availability:read",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{regionUrl}}/auth/connect/token",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"auth",
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Interaction Content API",
+			"item": [
+				{
+					"name": "/interactions (V2)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.newvoicemedia.v2+json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interaction-content/interactions?start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interaction-content",
+								"interactions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "direction",
+									"value": "inbound",
+									"disabled": true
+								},
+								{
+									"key": "connectEither",
+									"value": "55555",
+									"disabled": true
+								},
+								{
+									"key": "guid",
+									"value": "{{interactionGuid}}",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "handlingAgents:desc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions/{guid} (V2)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e0a4ee16-b5d3-4f0a-9b4b-922a09ed7db9",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.newvoicemedia.v2+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interaction-content/interactions/{{interactionGuid}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interaction-content",
+								"interactions",
+								"{{interactionGuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions/{Guid}/content/{contnetKey}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.newvoicemedia.v2+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interaction-content/interactions/{{interactionGuid}}/content/callrecording",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interaction-content",
+								"interactions",
+								"{{interactionGuid}}",
+								"content",
+								"callrecording"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Insights Stats API",
+			"item": [
+				{
+					"name": "/queue-times",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58bb1c0c-8596-4d17-958d-56f7eed0cf31",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c4101d68-9c46-43c2-8545-7cd914848a84",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/queue-times?start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"queue-times"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "include",
+									"value": "Started",
+									"disabled": true
+								},
+								{
+									"key": "queues",
+									"value": "Support",
+									"disabled": true
+								},
+								{
+									"key": "queueType",
+									"value": "ACD",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions/{guid}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "43ee1f3d-1c54-4929-be72-ea5dea846957",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e022b303-2046-4d17-ac71-2fdad684bf2a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/interactions/{{interactionGuid}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"interactions",
+								"{{interactionGuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions/ongoing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4cb952d0-364a-4e35-a5e8-a426f944f0df",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9d202e1d-988b-41f0-a8f5-f2069e157b8a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/interactions/ongoing",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"interactions",
+								"ongoing"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3123f960-89e7-4fc0-8165-e01628fc9c1d",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "024d3fdf-9f97-4995-a808-21682f7bade4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/interactions?start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"interactions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "include",
+									"value": "Started",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agents/{id}/interactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e68f3d49-3a53-42e2-a2df-343f82abfc2c",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d822b5be-c9f3-448a-ab04-ffdd72f82d70",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agents/{{agentId}}/interactions?since={{startDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agents",
+								"{{agentId}}",
+								"interactions"
+							],
+							"query": [
+								{
+									"key": "since",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "5000",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agent-summaries",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f73f6446-5b22-456e-8cf2-13ae7a4f4322",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e98d2467-8377-4276-bf84-686ba35baf30",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agent-summaries?cadence=15&start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agent-summaries"
+							],
+							"query": [
+								{
+									"key": "cadence",
+									"value": "15"
+								},
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "agentId",
+									"value": "{{agentId}}",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agent-status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "63143fe5-9556-46c6-b7ef-630dd64112ad",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c29e6280-9cd0-4a61-ac38-e13b273a6f5d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agent-status",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agent-status"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "2000",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agent-activities/presence",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "41a97d6c-a269-4083-ace9-1ab06b09d505",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e715aab5-9feb-468f-bc35-652161b00c02",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agent-activities/presence?start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agent-activities",
+								"presence"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "include",
+									"value": "Started",
+									"disabled": true
+								},
+								{
+									"key": "agentId",
+									"value": "{{agentId}}",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agent-activities/interactions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "44d3e51a-70a1-48b0-9517-c5d4f672c9f1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "997e3ef9-b9ce-4fb5-b940-074f32598e14",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agent-activities/interactions?start={{startDate}}&end={{endDate}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agent-activities",
+								"interactions"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "include",
+									"value": "Started",
+									"disabled": true
+								},
+								{
+									"key": "agentId",
+									"value": "{{agentId}}",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "Failed",
+									"disabled": true
+								},
+								{
+									"key": "direction",
+									"value": "Inbound",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1000",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/agent-activities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f902dabd-9903-4b0f-bf13-46ab24be1393",
+								"exec": [
+									"pm.test('Returns a 200 response', () =>",
+									"    pm.response.to.have.status(200)",
+									")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "52b329a5-68a2-4412-a4f1-b493b18153bf",
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/stats/agent-activities?start={{startDate}}&end={{endDate}}&include=Started&agentId={{agentId}}&type=Interaction&limit=1000&page=1",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"stats",
+								"agent-activities"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{startDate}}"
+								},
+								{
+									"key": "end",
+									"value": "{{endDate}}"
+								},
+								{
+									"key": "include",
+									"value": "Started"
+								},
+								{
+									"key": "agentId",
+									"value": "{{agentId}}"
+								},
+								{
+									"key": "type",
+									"value": "Interaction"
+								},
+								{
+									"key": "limit",
+									"value": "1000"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						},
+						"description": "### Implementation Notes\nThe `GET /agent-activities` endpoint gets information about agents' activities. This information includes the agents' presence, workload and interaction activities. Use this endpoint for a full picture of an agent's activity.\n\n### Example Value\n\n```json\n{\n  \"meta\": {\n    \"page\": 1,\n    \"count\": 1,\n    \"pageCount\": 1,\n    \"totalCount\": 1\n  },\n  \"items\": [\n    {\n      \"agentId\": \"1234\",\n      \"type\": \"Interaction\",\n      \"category\": \"Connected\",\n      \"name\": \"null\",\n      \"start\": \"2017-01-04T15:11:30.274Z\",\n      \"status\": \"Ongoing\",\n      \"duration\": 113706,\n      \"reason\": \"null\",\n      \"interaction\": {\n        \"guid\": \"62414dc5-750e-4200-b125-7a11b61e3a28\",\n        \"medium\": \"Phone\",\n        \"direction\": \"Inbound\"\n      },\n      \"channel\": {\n        \"guid\": \"63e39f7f-917e-438f-82c1-cfdca5f9c37d\"\n      },\n      \"workload\": {\n        \"calls\": 1\n      }\n    }\n  ],\n  \"upTo\": \"2018-09-13T15:12:26.275Z\"\n}\n```"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User Admin API",
+			"item": [
+				{
+					"name": "/users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d378a20f-fdb1-4db0-b0ab-2a73efce790a",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"username\", jsonData.items[jsonData.items.length - 1].username);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v2+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{apiGatewayUrl}}/useradmin/users?limit=25&page=1",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"useradmin",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "25",
+									"description": "Number of items per page. Default is 25, max is 5000."
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number. Default is 0, max is 1000000000."
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Untitled Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users?limit=25&page=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "25"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/vnd.newvoicemedia.v2+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"items\": [\n  {\n   \"username\": \"<string>\",\n   \"name\": \"<string>\",\n   \"email\": \"<email>\",\n   \"license\": \"<string>\",\n   \"ssoExternalId\": \"<string>\",\n   \"chargeable\": true,\n   \"type\": \"<string>\",\n   \"voice\": {\n    \"id\": \"<string>\",\n    \"phoneNumber\": \"<string>\",\n    \"country\": \"<string>\",\n    \"location\": \"<string>\",\n    \"displayFormat\": \"<string>\",\n    \"active\": true,\n    \"webrtc\": \"<boolean>\",\n    \"enforcedDispositionCodes\": \"<boolean>\",\n    \"transcribeCalls\": \"<boolean>\",\n    \"outboundWrapUp\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterNoAnswer\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterLineBusy\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterInvalidNumber\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterNetworkIssue\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"telephonyRegion\": \"<string>\",\n    \"callbackNumbers\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"groupIDs\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"skillIDs\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"groups\": [\n     {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\"\n     }\n    ],\n    \"skills\": [\n     {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\"\n     },\n     {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\"\n     }\n    ]\n   },\n   \"permissions\": {\n    \"groups\": [\n     {\n      \"id\": \"<string>\",\n      \"write\": \"<boolean>\"\n     },\n     {\n      \"id\": \"<string>\",\n      \"write\": \"<boolean>\"\n     }\n    ],\n    \"lines\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"addresses\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"interactionPlans\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"queues\": [\n     {\n      \"applicationName\": \"<string>\",\n      \"dialledNumber\": \"<string>\",\n      \"write\": \"<boolean>\"\n     },\n     {\n      \"applicationName\": \"<string>\",\n      \"dialledNumber\": \"<string>\",\n      \"write\": \"<boolean>\"\n     }\n    ]\n   },\n   \"toggles\": \"<object>\"\n  },\n  {\n   \"username\": \"<string>\",\n   \"name\": \"<string>\",\n   \"email\": \"<email>\",\n   \"license\": \"<string>\",\n   \"ssoExternalId\": \"<string>\",\n   \"chargeable\": true,\n   \"type\": \"<string>\",\n   \"voice\": {\n    \"id\": \"<string>\",\n    \"phoneNumber\": \"<string>\",\n    \"country\": \"<string>\",\n    \"location\": \"<string>\",\n    \"displayFormat\": \"<string>\",\n    \"active\": true,\n    \"webrtc\": \"<boolean>\",\n    \"enforcedDispositionCodes\": \"<boolean>\",\n    \"transcribeCalls\": \"<boolean>\",\n    \"outboundWrapUp\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterNoAnswer\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterLineBusy\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterInvalidNumber\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"backToReadyAfterNetworkIssue\": {\n     \"type\": \"boolean\",\n     \"default\": \"<boolean>\"\n    },\n    \"telephonyRegion\": \"<string>\",\n    \"callbackNumbers\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"groupIDs\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"skillIDs\": [\n     \"<string>\",\n     \"<string>\"\n    ],\n    \"groups\": [\n     {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\"\n     }\n    ],\n    \"skills\": [\n     {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\"\n     },\n     {\n      \"id\": \"<integer>\",\n      \"name\": \"<string>\"\n     }\n    ]\n   },\n   \"permissions\": {\n    \"groups\": [\n     {\n      \"id\": \"<string>\",\n      \"write\": \"<boolean>\"\n     },\n     {\n      \"id\": \"<string>\",\n      \"write\": \"<boolean>\"\n     }\n    ],\n    \"lines\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"addresses\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"interactionPlans\": [\n     {\n      \"id\": \"<string>\"\n     },\n     {\n      \"id\": \"<string>\"\n     }\n    ],\n    \"queues\": [\n     {\n      \"applicationName\": \"<string>\",\n      \"dialledNumber\": \"<string>\",\n      \"write\": \"<boolean>\"\n     },\n     {\n      \"applicationName\": \"<string>\",\n      \"dialledNumber\": \"<string>\",\n      \"write\": \"<boolean>\"\n     }\n    ]\n   },\n   \"toggles\": \"<object>\"\n  }\n ],\n \"meta\": {\n  \"page\": \"<integer>\",\n  \"count\": \"<integer>\",\n  \"pageCount\": \"<integer>\",\n  \"totalCount\": \"<integer>\",\n  \"toggles\": [\n   {\n    \"defaultValue\": \"<boolean>\",\n    \"featureType\": \"<string>\",\n    \"description\": \"<string>\"\n   },\n   {\n    \"defaultValue\": \"<boolean>\",\n    \"featureType\": \"<string>\",\n    \"description\": \"<string>\"\n   }\n  ]\n }\n}"
+						}
+					]
+				},
+				{
+					"name": "/users/{username}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/vnd.newvoicemedia.v2+json"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{apiGatewayUrl}}/useradmin/users/{{username}}",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"useradmin",
+								"users",
+								"{{username}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "No user with that username could be found.",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"<string>"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Untitled Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"<string>"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/vnd.newvoicemedia.v2+json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"username\": \"<string>\",\n \"name\": \"<string>\",\n \"email\": \"<email>\",\n \"license\": \"<string>\",\n \"ssoExternalId\": \"<string>\",\n \"chargeable\": true,\n \"type\": \"<string>\",\n \"voice\": {\n  \"id\": \"<string>\",\n  \"phoneNumber\": \"<string>\",\n  \"country\": \"<string>\",\n  \"location\": \"<string>\",\n  \"displayFormat\": \"<string>\",\n  \"active\": true,\n  \"webrtc\": \"<boolean>\",\n  \"enforcedDispositionCodes\": \"<boolean>\",\n  \"transcribeCalls\": \"<boolean>\",\n  \"outboundWrapUp\": {\n   \"type\": \"boolean\",\n   \"default\": \"<boolean>\"\n  },\n  \"backToReadyAfterNoAnswer\": {\n   \"type\": \"boolean\",\n   \"default\": \"<boolean>\"\n  },\n  \"backToReadyAfterLineBusy\": {\n   \"type\": \"boolean\",\n   \"default\": \"<boolean>\"\n  },\n  \"backToReadyAfterInvalidNumber\": {\n   \"type\": \"boolean\",\n   \"default\": \"<boolean>\"\n  },\n  \"backToReadyAfterNetworkIssue\": {\n   \"type\": \"boolean\",\n   \"default\": \"<boolean>\"\n  },\n  \"telephonyRegion\": \"<string>\",\n  \"callbackNumbers\": [\n   \"<string>\",\n   \"<string>\"\n  ],\n  \"groupIDs\": [\n   \"<string>\",\n   \"<string>\"\n  ],\n  \"skillIDs\": [\n   \"<string>\",\n   \"<string>\"\n  ],\n  \"groups\": [\n   {\n    \"id\": \"<string>\",\n    \"name\": \"<string>\"\n   },\n   {\n    \"id\": \"<string>\",\n    \"name\": \"<string>\"\n   }\n  ],\n  \"skills\": [\n   {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\"\n   },\n   {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\"\n   }\n  ]\n },\n \"permissions\": {\n  \"groups\": [\n   {\n    \"id\": \"<string>\",\n    \"write\": \"<boolean>\"\n   },\n   {\n    \"id\": \"<string>\",\n    \"write\": \"<boolean>\"\n   }\n  ],\n  \"lines\": [\n   {\n    \"id\": \"<string>\"\n   },\n   {\n    \"id\": \"<string>\"\n   }\n  ],\n  \"addresses\": [\n   {\n    \"id\": \"<string>\"\n   },\n   {\n    \"id\": \"<string>\"\n   }\n  ],\n  \"interactionPlans\": [\n   {\n    \"id\": \"<string>\"\n   },\n   {\n    \"id\": \"<string>\"\n   }\n  ],\n  \"queues\": [\n   {\n    \"applicationName\": \"<string>\",\n    \"dialledNumber\": \"<string>\",\n    \"write\": \"<boolean>\"\n   },\n   {\n    \"applicationName\": \"<string>\",\n    \"dialledNumber\": \"<string>\",\n    \"write\": \"<boolean>\"\n   }\n  ]\n },\n \"toggles\": \"<object>\"\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Interactions API",
+			"item": [
+				{
+					"name": "/register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a022665f-dd22-4d24-bc33-60d9ac2a70c0",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v1+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provider\": \"testprovider\",\r\n    \"agentactionspermitted\":\r\n    {\r\n        \"hold\": 1,\r\n        \"release\" : 1\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interactions/register",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interactions",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/invoke (case)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "295c8a05-9978-40ca-a0b2-4954c3d31032",
+								"exec": [
+									"//All of these values can be used in the body text ",
+									"",
+									"//gives you a random number for each request ",
+									"postman.setEnvironmentVariable(\"random\", Math.floor(Math.random() * 1000));",
+									"",
+									"//Creates a random string that can be used in the display text (i was just messing about)",
+									"function makeid()",
+									"{",
+									"    var text = \"\";",
+									"    var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";",
+									"",
+									"    for( var i=0; i < 15; i++ )",
+									"        text += possible.charAt(Math.floor(Math.random() * possible.length));",
+									"",
+									"    return text;",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"random3\", makeid());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ba36c219-67e3-491b-af0e-42a19471e6b1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v1+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requests\": \n  [\n    {\n      \"provider\": \"testprovider\",\n      \"action\": \"dispatch\",\n      \"requestid\": \"{{random}}\",\n      \"externalid\": \"{{random}}\",\n      \"route\": \"APIRouting\",\n      \"linkeddata\":\n      [\n        {\"type\": \"clid\", \"value\": \"Cases {{random}}\"},\n        {\"type\": \"url\", \"label\": \"{{random3}}\", \"value\": \"https://vonage.com\"},\n        {\"type\": \"name\", \"value\": \"Case Friednly Name\"},\n        {\"type\": \"mediatype\", \"value\": \"Case-External\"}\n      ],\n      \"routingdata\":\n      {\n          \"interactiontype\" : \"nonlive\"\n      }\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interactions/invoke",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interactions",
+								"invoke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/invoke (sms)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bde06454-5231-4891-8cf6-615202695504",
+								"exec": [
+									"",
+									"postman.setEnvironmentVariable(\"random\", Math.floor(Math.random() * 1000));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v1+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"requests\":\r\n  [\r\n    {\r\n      \"action\": \"dispatch\",\r\n      \"route\": \"SMSRouting\",\r\n      \"requestid\": \"{{random}}\",\r\n      \"externalid\": \"{{random}}\",\r\n      \"linkeddata\":\r\n      [\r\n        {\"type\": \"interactionproperty\", \"key\": \"ToNum\", \"value\": \"07970303957\"},\r\n        {\"type\": \"interactionproperty\", \"key\": \"FromNum\", \"value\": \"Vonage Test\"},\r\n        {\"type\": \"interactionproperty\", \"key\": \"Message\", \"value\": \"A sms message from a test API Call\"},\r\n        {\"type\": \"mediatype\", \"value\": \"SMS\"}\r\n      ],\r\n      \"routingdata\":\r\n      {\r\n          \"interactiontype\" : \"nonlive\"\r\n      }\r\n    }\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{apiGatewayUrl}}/interactions/invoke",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"interactions",
+								"invoke"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Agent Availability API",
+			"item": [
+				{
+					"name": "/agents-availability",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e8f1c30b-d02d-45b0-9e80-f817dbeaa035",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v1+json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{apiGatewayUrl}}/agents-availability?skillNames=Service",
+							"host": [
+								"{{apiGatewayUrl}}"
+							],
+							"path": [
+								"agents-availability"
+							],
+							"query": [
+								{
+									"key": "skillNames",
+									"value": "Service"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Conversation Analyzer API",
+			"item": [
+				{
+					"name": "/interactions/{guid}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v3+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{APIGatewayURL}}/conversation-analyzer/interactions/{{guid1}}?transcript=true",
+							"host": [
+								"{{APIGatewayURL}}"
+							],
+							"path": [
+								"conversation-analyzer",
+								"interactions",
+								"{{guid1}}"
+							],
+							"query": [
+								{
+									"key": "transcript",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Get call {guid}"
+					},
+					"response": []
+				},
+				{
+					"name": "/interactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.newvoicemedia.v4+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{APIGatewayURL}}/conversation-analyzer/interactions?calls={{guid1}},{{guid2}},{{guid3}}&transcript=true",
+							"host": [
+								"{{APIGatewayURL}}"
+							],
+							"path": [
+								"conversation-analyzer",
+								"interactions"
+							],
+							"query": [
+								{
+									"key": "calls",
+									"value": "{{guid1}},{{guid2}},{{guid3}}"
+								},
+								{
+									"key": "transcript",
+									"value": "true"
+								}
+							]
+						},
+						"description": "{guid1},{guid2},{guid3}..."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "V0 Auth",
+			"item": [
+				{
+					"name": "Auth Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eee4b47b-3bbd-4b67-83bb-0b1a03a33a4a",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"legacyToken\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{legacySecret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{accountkey}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "grant_type=client_credentials"
+						},
+						"url": {
+							"raw": "{{regionUrl}}/v0/oauth2/token",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "V0 Calls",
+			"item": [
+				{
+					"name": "/calls/{guid}",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json; version=3"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{legacyToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{regionUrl}}/v0/{{accountkey}}/calls/{{interactionGuid}}",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"{{accountkey}}",
+								"calls",
+								"{{interactionGuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/calls",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{legacyToken}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json; version=5"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": {\n        \"agentId\": \"5464\"\n    },\n    \"to\": {\n        \"telephoneNumber\": \"07970303957\"\n    },\n    \"regarding\": {\n        \"reference\": \"http://Test.com\"\n    },\n    \"application\": \"TestApp\"\n}"
+						},
+						"url": {
+							"raw": "{{regionUrl}}/v0/{{accountkey}}/calls",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"{{accountkey}}",
+								"calls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/calls/{guid} (Recordings)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{legacyToken}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json; version=2"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"recordingStatus\": \"Started\" }"
+						},
+						"url": {
+							"raw": "{{regionUrl}}/v0/{{accountkey}}/calls/{{interactionGuid}}",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"{{accountkey}}",
+								"calls",
+								"{{interactionGuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/calls/{guid}/dispositionCode",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{legacyToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"dispositionCode\": \"Wrong Number\", \"agentId\": \"5464\" }"
+						},
+						"url": {
+							"raw": "{{regionUrl}}/v0/{{accountkey}}/calls/{{interactionGuid}}/dispositionCode",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"{{accountkey}}",
+								"calls",
+								"{{interactionGuid}}",
+								"dispositionCode"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "V0 Agents",
+			"item": [
+				{
+					"name": "/agents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{legacyToken}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json; version=2 "
+							}
+						],
+						"url": {
+							"raw": "{{regionUrl}}/v0/{{accountkey}}/agents?availability=readyForPhoneCall",
+							"host": [
+								"{{regionUrl}}"
+							],
+							"path": [
+								"v0",
+								"{{accountkey}}",
+								"agents"
+							],
+							"query": [
+								{
+									"key": "availability",
+									"value": "readyForPhoneCall"
+								},
+								{
+									"key": "groups",
+									"value": "001",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "count",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Agents Ready",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer AAEAAHW5Fkw_f3fUW3DTWdaZI1n7n5VN9Wavm9FggfpY9qP_fIWt4EM1-NId01rCd7Kw7aFcfbZQfXvt0sNZj_SHlpBuMWZ3sSFhz_peZyu3mCdXQPLVcZKyQOoF61wZPe82v9H-3EkFgUjM0dzcO0QLKfCIDEu20M9d1eVBiJHueLAb786NTRRSY_hteANODcMp5iVyXxeQTHwbBpoONAS0v7YputHvuJxYFRIcDtB6emC9-AdH5COmnuosCoIvqTFp1vhLzDqNHvNQHELvgLzeltaoqZULdmHJ8EGEfJ7WsUiyyCCLsQyJM9rHEa-1IB8TluKZPXWYTVQwgcAMNp5VE-dUAgAAAAEAAFjK8lN1o8kdzRCqQEBV1PT5UUMQRbt9de_bs-cix0Dfem3tUVuS2ZbKDYJ0aoxQ03PrQAey4-67iA4D-quFKyECZqZCUSK4ccKEGcOrSAtp0QAVLsnGsIQn4RUkLRiA9IrmFgIvLDmNp_e6HESeJH5swaCPRjmdEdt5QTRJ0rNXe7jm0zQZRqcO1NmpMIOeeEhe5IAQqwjwrouBWtVXW2Oc1NnPF8jpSevw4OJ1dv6SMJOivhMWjrTGpytMruKrwzQK5gmfW3T79iQ67di_z7b2Sa2HYhfO923dcNzIcMIGUeNO904Da31_EYTm4MrWI-AfIMA9Wc0nijOP5jwzEYMx8fjOdFPnRjLLgRSae-MV8iJpckFnBBs0ebJN-Mf4TRkUlKH96wTl-fPAF60bbXVgXnJoCNh2BQMz50oZsVpHenKGzeTbRgu2sYKvsmFE0R8brC_AZ2crNmhLeMG9QvFEpjDEFC5vI9E2gVkxoQ8bHmgIbHkc7SIlLJxQ43o8vPPm_W5SzzuFr8n6yX6nbZghKTbDTKk3yhgN2p7S3bb01NnzyJfG69XQZyLItLYZywwiSyCgl93NnzzNh6OO0LtnSSLDntDjFYbJnaedmN_LxptWdUYAJYk9k5cAZaB9Yv0Ubkt9YXYOKSigtm7ZS3gvfh2LCYpCiI3VrJVEclPGHqlTposEpe46HLAliSBFdyszAdsvZQ7kreorjcaXa9KmOidzcwuPDY762jQ3dbqceXOBwY8qv-5IJ1O5UocwFc0F1GBK_OmJbjYgf1RL0Jk",
+										"name": "Authorization",
+										"enabled": true
+									},
+									{
+										"key": "Accept",
+										"value": "application/json; version=2",
+										"name": "Accept",
+										"enabled": true
+									},
+									{
+										"key": "Cache-Control",
+										"name": "Cache-Control",
+										"value": "no-cache"
+									}
+								],
+								"url": {
+									"raw": "https://cloud4.contact-world.net/v0/mbamlsffh50/agents?availability=readyForPhoneCall",
+									"protocol": "https",
+									"host": [
+										"cloud4",
+										"contact-world",
+										"net"
+									],
+									"path": [
+										"v0",
+										"mbamlsffh50",
+										"agents"
+									],
+									"query": [
+										{
+											"key": "availability",
+											"value": "readyForPhoneCall"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "javascript",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive",
+									"name": "Connection",
+									"description": "Options that are desired for the connection"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip",
+									"name": "Content-Encoding",
+									"description": "The type of encoding used on the data."
+								},
+								{
+									"key": "Content-Length",
+									"value": "70",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 01 Mar 2016 16:49:45 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "-1",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "P3P",
+									"value": "CP=\"CAO PSA OUR\"",
+									"name": "P3P",
+									"description": "This header is supposed to set P3P policy, in the form of P3P:CP=\"your_compact_policy\". However, P3P did not take off, most browsers have never fully implemented it, a lot of websites set this header with fake policy text, that was enough to fool browsers the existence of P3P policy and grant permissions for third party cookies."
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Vary",
+									"value": "User-Agent,Accept-Encoding",
+									"name": "Vary",
+									"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+								},
+								{
+									"key": "Via",
+									"value": "1.1 cloud4.contact-world.net",
+									"name": "Via",
+									"description": "Informs the client of proxies through which the response was sent."
+								},
+								{
+									"key": "x-info",
+									"value": "255-214",
+									"name": "x-info",
+									"description": "Custom header"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "DGjsRM9yvg_zYns211IwCgVx1Uyi2SeHsFnKAhkI49O7daKSPzaGfjPSBWHNUijU-1fensdcdfmMwlks4tZYvobUVqE1",
+									"key": "__RequestVerificationToken_L0F1dGg1"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "-X9s_EoUbgLp65rf4ARCzl2yjShWcRVkKsrpW3j7ZS1nZ0wSTHlQBLlQieAFytzA8m5KN9NDat-BbmPd_oyUYIzwOmGGPtO03eBN6I-b3JcxtRW2jmM_qVE2j385gKa52YZ7xtmSS2f17Py9BASq8De5F6bYy2fOsHDUNXq7k1hVlfm1OyPkAQFGp7p7K2S3huPGqUjfIAanvAZfkGK3rzguL8ehg7DiXZoDsChHdln9Il44LoRnOH-DcCedmXTXmTenPw",
+									"key": "IdSvr.WsFedTracking"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "k03u2uztpj5wnygspc1snem5",
+									"key": "ASP.NET_SessionId"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "GyvVpd1Hvy4Njuq8p2an3N30FlqA51NP_Vu8DwkBHkn6A_gXIlgEFe4RSXPbBp9Bfg965XjQrhpD4FpFvCaE7W2F3OA1",
+									"key": "__RequestVerificationToken_Q29udGFjdEh1YkFuZFNlcnZpY2VDbG91ZA2"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "69A14802B4624ED4B2A6E44ECEBFE9529D74A61956B9FEEDA356EB0F98B6ED34E5368E3CE649FFA02AEEF2E703107D595662399B0F510DC21588497A96ED1A931044373B974E93B49A8100920BA1547C1AA2F88EB25A04C6B11170330D28FEFBC8564CB51F14F99827FA4B8E40DE79D4E4E97948D32A9170E00BB320873FFF0867E8696398832C2817316B4FED2FA2CA98BFA3BD8F031657852AE3589F24BD5BAC09F4C1B94FADA2FCB5A7369032A4B4634C80943C495F58CBB9B9D9C7BBE13B12B93C1D08913062D62BBB2868EEDBB3CCC68185E785206FFB806A855DA1D508651D29B155580C1B74A2224D1A833066C4CE5AB53EB11ACE0ACD19DB546021EF7D4E045E4803F2520ECF8DEC96FE8133BA5B5241867FB14B85E8389E8C101312084EAC5184A64C3BFF2C08234DFB21097BE943594525E8C6903D5800C12BEE74AF0CFC81E2C4B1F10E91123E8FE5D69784EA2104A7D874B0EBFB663B31B785F5937894131F8C95E18ABE9F29F520C18BB397EBE04D23F06382B15CC4CCB1F49D4EDB6DC0261D37D6F3034926170C59D69250246E1BE2543B0E780C35155E1CD6CBFB62DC24A83B3A6BCB0B93D8A3041697723108EFA77F6BB063D5302D857B993B4BB6A64768C59B172D7505F536C8948C67858A312046FB3FA13819D400B74F3F7BE12847A2FE3735D261F1AD497F8975C5FE4BF11C008542B41998F2AAF4A66ED5E878266045D14D0C132D44D2C1F8348093B214B5AC01CDFBCE302CC25FE8307AED36272A961384C9F19D070F589282865A4DB5D18D1E0EDB4EE3197EECF054A356015F87EA4526B8F38DBAF43F574FC3EC36038F4840D1B9B864D500F6B911950080E01EEF561D23CD940F49C478F649A1C5D8B6F9DF939CAA1E32EA0CADA53EB1261715EE4C739A089B1780B23486E3023A2850A68819B7BCA51C3F41126DF673948C168445DA4D110608C1C3BE1A1DCE474086030A071F23909D4CAC29989EA90009EEFD42E12F85F107C72AE2C8D3ACDC",
+									"key": "XAuthKey"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": false,
+									"httpOnly": true,
+									"domain": ".contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "69A14802B4624ED4B2A6E44ECEBFE9529D74A61956B9FEEDA356EB0F98B6ED34E5368E3CE649FFA02AEEF2E703107D595662399B0F510DC21588497A96ED1A931044373B974E93B49A8100920BA1547C1AA2F88EB25A04C6B11170330D28FEFBC8564CB51F14F99827FA4B8E40DE79D4E4E97948D32A9170E00BB320873FFF0867E8696398832C2817316B4FED2FA2CA98BFA3BD8F031657852AE3589F24BD5BAC09F4C1B94FADA2FCB5A7369032A4B4634C80943C495F58CBB9B9D9C7BBE13B12B93C1D08913062D62BBB2868EEDBB3CCC68185E785206FFB806A855DA1D508651D29B155580C1B74A2224D1A833066C4CE5AB53EB11ACE0ACD19DB546021EF7D4E045E4803F2520ECF8DEC96FE8133BA5B5241867FB14B85E8389E8C101312084EAC5184A64C3BFF2C08234DFB21097BE943594525E8C6903D5800C12BEE74AF0CFC81E2C4B1F10E91123E8FE5D69784EA2104A7D874B0EBFB663B31B785F5937894131F8C95E18ABE9F29F520C18BB397EBE04D23F06382B15CC4CCB1F49D4EDB6DC0261D37D6F3034926170C59D69250246E1BE2543B0E780C35155E1CD6CBFB62DC24A83B3A6BCB0B93D8A3041697723108EFA77F6BB063D5302D857B993B4BB6A64768C59B172D7505F536C8948C67858A312046FB3FA13819D400B74F3F7BE12847A2FE3735D261F1AD497F8975C5FE4BF11C008542B41998F2AAF4A66ED5E878266045D14D0C132D44D2C1F8348093B214B5AC01CDFBCE302CC25FE8307AED36272A961384C9F19D070F589282865A4DB5D18D1E0EDB4EE3197EECF054A356015F87EA4526B8F38DBAF43F574FC3EC36038F4840D1B9B864D500F6B911950080E01EEF561D23CD940F49C478F649A1C5D8B6F9DF939CAA1E32EA0CADA53EB1261715EE4C739A089B1780B23486E3023A2850A68819B7BCA51C3F41126DF673948C168445DA4D110608C1C3BE1A1DCE474086030A071F23909D4CAC29989EA90009EEFD42E12F85F107C72AE2C8D3ACDC",
+									"key": "air.xauthkey"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "GyvVpd1Hvy4Njuq8p2an3N30FlqA51NP_Vu8DwkBHkn6A_gXIlgEFe4RSXPbBp9Bfg965XjQrhpD4FpFvCaE7W2F3OA1",
+									"key": "__RequestVerificationToken_L0NhbGxDZW50cmUvU2VydmljZUNsb3Vk0"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "",
+									"key": "GroupsListStateKey"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "",
+									"key": "AgentsListStateKey"
+								},
+								{
+									"expires": "Mon May 30 2016 16:43:55 GMT+0100 (GMT Summer Time)",
+									"hostOnly": true,
+									"httpOnly": false,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": false,
+									"value": "true",
+									"key": "nvmPortalTour"
+								},
+								{
+									"expires": "Invalid Date",
+									"hostOnly": true,
+									"httpOnly": true,
+									"domain": "cloud4.contact-world.net",
+									"path": "/",
+									"secure": true,
+									"session": true,
+									"value": "",
+									"key": "aq1"
+								}
+							],
+							"body": "{\"count\":2,\"agents\":[{\"id\":\"0050\",\"links\":[]},{\"id\":\"0056\",\"links\":[]}]}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
